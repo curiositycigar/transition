@@ -7,21 +7,34 @@
     <script src="main.js"></script>
 </head>
 <body>
+    <div id="canvasContainer">
+        <div id="canvasContainer1" data-p="0" data-time="0">
+            <h2 class="canvas-title">cubic-bezier</h2>
+            <canvas id="cubicBezier" width="400" height="400">
+                您的浏览器不支持canvas画布，请升级到最新版或下载Chrome浏览器(谷歌浏览器)*_*!!
+            </canvas>
+            <button id="p1"></button>
+            <button id="p2"></button>
+        </div>
+        <div id="canvasContainer2">
+            <h2 class="canvas-title">matrix(a,b,c,d,e,f)</h2>
+            <canvas id="matrix" width="400" height="400">
+                您的浏览器不支持canvas画布，请升级到最新版或下载Chrome浏览器(谷歌浏览器)*_*!!
+            </canvas>
+            <button id="c1"></button>
+            <button id="c2"></button>
+            <button id="c3"></button>
+            <button id="c4"></button>
+        </div>
+    </div>
     <div id="header">
-        <h2 class="code-show">
+        <h1 class="code-show">
             <span>transition:</span>&nbsp;
             <span class="data" id="property">all</span>&nbsp;
             <span class="data" id="duration">0.5</span>s&nbsp;
-            cubiz-bezier(<span class="data" id="function">0.5,0.5,0.5,0.5</span>)&nbsp;
+            cubiz-bezier(<span class="data" id="bezier">0.5,0.5,0.5,0.5</span>)&nbsp;
             <span class="data" id="delay">0.5</span>s;
-        </h2>
-    </div>
-    <div id="canvasContainer">
-        <canvas id="cubicBezier" width="400" height="400" style="border:1px solid #000;">
-            您的浏览器不支持canvas画布，请升级到最新版或下载Chrome浏览器(谷歌浏览器)*_*!!
-        </canvas>
-        <button id="p1"></button>
-        <button id="p2"></button>
+        </h1>
     </div>
     <div id="showContainer">
     </div>
