@@ -75,6 +75,7 @@ transitionMaker.pointToMouse=function(px,py){
 transitionMaker.getController=function(element,name){
     var control=null;
     /*获取坐标*/
+    var m=transitionMaker.getMousePosition();
     /*保证控制点在canvas画布内*/
     function addMoveListener(){
         var x,y;
