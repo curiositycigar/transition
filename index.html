@@ -7,37 +7,94 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <div id="canvasContainer">
-        <div id="canvasContainer1" data-p="0" data-time="0">
-            <h2 class="canvas-title">cubic-bezier</h2>
+    <div id="header">
+        <h1>CSS3 动画生成器 V0.1</h1>
+    </div>
+    <div id="operationArea">
+        <div id="sideNav">
+            <ul id="navContral">
+                <li class="active" data-target="0">cubic-bezier</li><li data-target="1">border</li><li data-target="2">transform</li><li data-target="3">library</li>
+            </ul>
+        </div>
+        <div class="operation-block" id="canvasContainer1" data-p="0" data-time="0">
+            <h2 class="canvas-title">cubic-bezier(<span id="bezierTitle">x1,y1,x2,y2</span>)</h2>
             <canvas id="cubicBezier" width="400" height="400">
                 您的浏览器不支持canvas画布，请升级到最新版或下载Chrome浏览器(谷歌浏览器)*_*!!
             </canvas>
-            <button id="p1"></button>
-            <button id="p2"></button>
+            <button class="drag-point" id="p1"></button>
+            <button class="drag-point" id="p2"></button>
         </div>
-        <div id="canvasContainer2">
-            <h2 class="canvas-title">matrix(a,b,c,d,e,f)</h2>
-            <canvas id="matrix" width="400" height="400">
-                您的浏览器不支持canvas画布，请升级到最新版或下载Chrome浏览器(谷歌浏览器)*_*!!
-            </canvas>
-            <button id="c1"></button>
-            <button id="c2"></button>
-            <button id="c3"></button>
-            <button id="c4"></button>
+        <div class="operation-block" style="display: none;">
+            <ul>
+                <li class="title">
+                    border
+                </li>
+                <li>
+                    <label for="borderWidth">border-width:50px</label>
+                    <input id="borderWidth" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="borderRadiusLT">border-radius-left-top:100px;</label>
+                    <input id="borderRadiusLT" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="borderRadiusLB">border-radius-left-bottom:100px;</label>
+                    <input id="borderRadiusLB" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="borderRadiusRT">border-radius-right-top:100px;</label>
+                    <input id="borderRadiusRT" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="borderRadiusRB">border-radius-right-bottom:100px;</label>
+                    <input id="borderRadiusRB" type="range" min="-10" step="1" max="10">
+                </li>
+            </ul>
         </div>
+        <div class="operation-block" style="display: none;">
+            <ul>
+                <li class="title">
+                    transform
+                </li>
+                <li>
+                    <label for="translateX">translateX(100px)</label>
+                    <input id="translateX" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="translateY">translateY(100px)</label>
+                    <input id="translateY" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="rotate">rotate(360deg)</label>
+                    <input id="rotate" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="scaleX">scaleX(0.5)</label>
+                    <input id="scaleX" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="scaleY">scaleY(0.5)</label>
+                    <input id="scaleY" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="skewX">skewX(100deg)</label>
+                    <input id="skewX" type="range" min="-10" step="1" max="10">
+                </li>
+                <li>
+                    <label for="skewY">skewY(100deg)</label>
+                    <input id="skewY" type="range" min="-10" step="1" max="10">
+                </li>
+            </ul>
+        </div>
+        <div class="operation-block" style="display:none;">
+            <ul>
+            </ul>
+        </div>
+        <!--<div class="code-show">-->
+            <!--<div></div>-->
+        <!--</div>-->
     </div>
-    <div id="header">
-        <h1 class="code-show">
-            <span>transition:</span>&nbsp;
-            <span class="data" id="property">all</span>&nbsp;
-            <span class="data" id="duration">0.5</span>s&nbsp;
-            cubiz-bezier(<span class="data" id="bezier">0.5,0.5,0.5,0.5</span>)&nbsp;
-            <span class="data" id="delay">0.5</span>s;
-        </h1>
+    <div style="position: fixed;left: 508px;top: 83px;background-color: #ded8ec;width: 100%;height:100%;">ppp
     </div>
-    <div id="showContainer">
-    </div>
-    <div id="libContainer"></div>
 </body>
 </html>

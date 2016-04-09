@@ -1,69 +1,237 @@
-html,body,div,canvas,h1,h2,h3,button{ margin: 0;padding: 0;}
+html,body,div,canvas,h1,h2,h3,button,ul,li{ margin: 0;padding: 0;}
 body{
     font-family: "Microsoft YaHei";
-    background-color: #fff;
     width: 100%;
     height: 800px;
     overflow: auto;
+    background-color: #fefefe;
+}
+ul{
+    list-style: none;
+}
+input{
+    margin: 0;
+    padding: 0;
+    height: 10px;
+}
+button{
+    font-weight: 700;
 }
 /*
-****头部用来展示当前transition属性值
-/**/
-#header{
+ * 重置input[type=range]样式
+*/
+
+input[type=range] {
+    -webkit-appearance: none;
+    margin-top:8px;
     width: 100%;
-    height: 60px;
-    line-height: 60px;
-    background-color: #fff;
-    min-width: 1003px;
-    text-align: center;
 }
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;/*range宽*/
+    height: 10px;/*range高*/
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 0 0 4px 1px #eeeeee;
+    background: #ded8ec;
+    border-radius: 5px;
+    border: 0 solid #010101;
+}
+/*webkit*/
+input[type=range]::-webkit-slider-thumb {
+    border: 1px solid #6c7cbb;
+    height: 10px;
+    width: 18px;
+    border-radius: 5px;
+    background: #8c9ed5;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: 0;
+}
+input[type=range]:focus::-webkit-slider-thumb{
+    background-color:#6c7cbb;
+    border: 1px solid #5b6baa;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+    box-shadow: 0 0 15px 1px #8c9ed5 inset;
+}
+/*moz*/
+input[type=range]::-moz-range-track {
+    width: 100%;/*range宽*/
+    height: 10px;/*range高*/
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 0 0 4px 1px #eeeeee;
+    background: #ded8ec;
+    border-radius: 5px;
+    border: 0 solid #010101;
+}
+input[type=range]::-moz-range-thumb {
+    border: 1px solid #6c7cbb;
+    height: 10px;
+    width: 18px;
+    border-radius: 5px;
+    background: #8c9ed5;
+    cursor: pointer;
+}
+/*ie*/
+input[type=range]::-ms-track {
+    width: 100%;/*range宽*/
+    height: 10px;/*range高*/
+    cursor: pointer;
+    animate: 0.2s;
+    border-radius: 5px;
+    background: #ded8ec;
+    border:0 solid #000000;
+    color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+    background: #ded8ec;
+    border: 0 solid #010101;
+    border-radius: 5px;
+}
+input[type=range]::-ms-fill-upper {
+    background: #ded8ec;
+    border: 0 solid #010101;
+    border-radius: 5px;
+}
+input[type=range]::-ms-thumb {
+    border:0 solid #000000;
+    height: 10px;
+    width: 18px;
+    border-radius: 5px;
+    background: #8c9ed5;
+    cursor: pointer;
+}
+input[type=range]:focus::-ms-thumb {
+    background-color: #6c7cbb;
+}
+input[type=range]:focus::-ms-fill-lower {
+    box-shadow: 0 0 15px 1px #8c9ed5 inset;
+}
+input[type=range]:focus::-ms-fill-upper {
+    box-shadow: 0 0 15px 1px #8c9ed5 inset;
+}
+
+
+/*头部*/
+#header{
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+    color: #f5f5f5;
+    background-color: #362c34;
+    min-width: 1003px;
+    border-bottom: 3px solid #8c9ed5;
+}
+#header h1{
+    margin-left: 30px;
+    font-size: 30px;
+}
+/*
+****展示当前transition属性值
+/**/
 .code-show{
+    width: 100%;
+    height: 400px;
+    background-color: #f5f5f5;
     font-size: 25px;
     color: #000;
 }
-.code-show .data{
-    color: #827bff;
-}
 /*
-****画布容器
 ****鼠标操作互动区域
 */
-#canvasContainer{
-    width: 1003px;
-    overflow: hidden;
-    margin: 0 auto;
+#operationArea{
+    margin-top: 80px;
+    width: 500px;
+    height: 100%;
+    border-right: 10px solid #6c7cbb;
+    overflow: auto;
 }
-#canvasContainer1,#canvasContainer2{
-    float: left;
+/*
+ *操作区域导航
+*/
+#sideNav{
+    width: 500px;
+}
+#sideNav ul{
+    width: 100%;
+    height: 70px;
+    text-align: center;
+    background-color: #ded8ec;
+    border-bottom:2px solid #6c7cbb;
+}
+#sideNav li{
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    background-color: #ded8ec;
+    color: #6c7cbb;
+    cursor: pointer;
+    padding: 20px 10px 0 10px;
+}
+#sideNav li.active{
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #f5f5f5;
+    border-left: 2px solid #6c7cbb;
+    border-right: 2px solid #6c7cbb;
+}
+#sideNav li:hover{
+    background-color: #f5f5f5;
+}
+/*
+ * 可视化操作区域
+*/
+#canvasContainer1{
     position: relative;
     width: 500px;
-    color: #999;
     height: 500px;
+    color: #766b7b;
+    background-color: #f5f5f5;
+}
+.operation-block+.operation-block{
+    background-color: #f5f5f5;
+    height: 400px;
+    padding-top: 50px;
+}
+.operation-block ul{
+    margin:0 50px;
 }
 /*
  * canvas title
 */
 .canvas-title{
     position: absolute;
+    z-index: 20;
+    font-size: 20px;
     left: 55px;
     top: 53px;
 }
 /*
 ****使用绝对定位
 */
-#cubicBezier,#matrix{
-    z-index:-100;
+#cubicBezier{
+    z-index:10;
     position: absolute;
     left: 50px;
     top: 50px;
-    background-color: #e9f0ee;
+    background-color: #f5f5f5;
+    /*box-shadow: -1px 3px 7px 1px #6c7cbb;*/
 }
 /*
  *用before after绘制坐标
 */
 #canvasContainer1:before{
     position: absolute;
-    z-index: -10;
+    z-index: 20;
     left: 100px;
     top: 150px;
     content: 'P('attr(data-p)')';
@@ -73,7 +241,7 @@ body{
 }
 #canvasContainer1:after{
     position: absolute;
-    z-index: -10;
+    z-index: 20;
     left: 150px;
     top: 350px;
     content: 'TIME('attr(data-time)')';
@@ -81,14 +249,15 @@ body{
     height: 50px;
     border-top: 1px solid #888;
 }
-#p1,#p2,#c1,#c2,#c3,#c4{
+.drag-point{
     position: absolute;
+    z-index: 30;
     width: 20px;
     height: 20px;
     border: none;
     margin-left: -10px;
     margin-top: -10px;
-    background-color: #999;
+    background-color: #8c9ed5;
     border-radius: 10px;
     outline: none;
 }
@@ -100,32 +269,46 @@ body{
     left: 300px;
     top: 250px;
 }
-#c1{
-    left: 250px;
-    top: 200px;
-}
-#c2{
-    left: 300px;
-    top: 250px;
-}
-#c3{
-    left: 290px;
-    top: 200px;
-}
-#c4{
-    left: 300px;
-    top: 350px;
-}
-#p1:focus,#p2:focus,#c1:focus,#c2:focus,#c3:focus,#c4:focus{
-    background-color: #ff0;
-    box-shadow: 0 0 2px 2px #99f;
+.drag-point:focus{
+    background-color: #ffff00;
+    box-shadow: 0 0 2px 2px #6c7cbb;
 }
 /*
 ****动画效果展示区域
 */
-#showContainer{
-
+.slide-block{
+    float: left;
+    position: relative;
+    width: 400px;
+    color: #766b7b;
+    height: 400px;
+    margin: 50px;
+    background-color: #f5f5f5;
+    box-shadow: 1px 3px 7px 1px #6c7cbb;
 }
+.slide-block ul{
+    margin: 40px;
+}
+.slide-block label{
+    width: 300px;
+    font-size: 14px;
+}
+li.title{
+    font-size: 20px;
+    font-weight: 600;
+    color: #766b7b;
+    margin-bottom: 50px;
+}
+li+li{
+    color: #6c7cbb;
+}
+label,input{
+    display: block;
+}
+/*
+ *
+ *
+*/
 /*
 ****库
 ****展示已存储transition效果
