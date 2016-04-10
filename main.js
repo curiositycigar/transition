@@ -259,7 +259,6 @@ window.onload=function(){
     transitionMaker.duration=byId("duration");
     transitionMaker.bezierTitle=byId("bezierTitle");
     transitionMaker.delay=byId("delay");
-    //transitionMaker.mousePosition=transitionMaker.getMousePosition(document.body,byId("canvasContainer1"));
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p1"),"p1");
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
     transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
