@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>CSS3 transition 效果生成器</title>
     <link rel="stylesheet" href="style.css" >
-    <script src="main.js"></script>
 </head>
 <body>
     <div id="header">
@@ -12,8 +11,8 @@
     </div>
     <div id="operationArea">
         <div id="sideNav">
-            <ul id="navContral">
-                <li class="active" data-target="0">cubic-bezier</li><li data-target="1">border</li><li data-target="2">transform</li><li data-target="3">library</li>
+            <ul id="navControl">
+                <li class="active" data-target="0">transition</li><li data-target="1">border</li><li data-target="2">transform</li><li data-target="3">library</li>
             </ul>
         </div>
         <div class="operation-block" id="canvasContainer1" data-p="0" data-time="0">
@@ -23,6 +22,16 @@
             </canvas>
             <button class="drag-point" id="p1"></button>
             <button class="drag-point" id="p2"></button>
+            <div style="padding: 0 50px;position: absolute;left: 0;top: 450px;width: 400px;">
+                <div>
+                    <label for="duration">duration:<span class="output">1</span>s</label>
+                    <input id="duration" type="range" min="0.1" step="0.1" max="10" value="1">
+                </div>
+                <div>
+                    <label for="delay">delay:<span class="output">1</span>s</label>
+                    <input id="delay" type="range" min="0" step="0.1" max="10" value="1">
+                </div>
+            </div>
         </div>
         <div class="operation-block" style="display: none;">
             <ul>
@@ -30,24 +39,20 @@
                     border
                 </li>
                 <li>
-                    <label for="borderWidth">border-width:50px</label>
-                    <input id="borderWidth" type="range" min="-10" step="1" max="10">
+                    <label for="borderRadiusLT">border-radius-left-top:<span class="output">0</span>px;</label>
+                    <input id="borderRadiusLT" type="range" min="0" step="1" max="75" value="0">
                 </li>
                 <li>
-                    <label for="borderRadiusLT">border-radius-left-top:100px;</label>
-                    <input id="borderRadiusLT" type="range" min="-10" step="1" max="10">
+                    <label for="borderRadiusRT">border-radius-right-top:<span class="output">0</span>px;</label>
+                    <input id="borderRadiusRT" type="range" min="0" step="1" max="75" value="0">
                 </li>
                 <li>
-                    <label for="borderRadiusLB">border-radius-left-bottom:100px;</label>
-                    <input id="borderRadiusLB" type="range" min="-10" step="1" max="10">
+                    <label for="borderRadiusRB">border-radius-right-bottom:<span class="output">0</span>px;</label>
+                    <input id="borderRadiusRB" type="range" min="0" step="1" max="75" value="0">
                 </li>
                 <li>
-                    <label for="borderRadiusRT">border-radius-right-top:100px;</label>
-                    <input id="borderRadiusRT" type="range" min="-10" step="1" max="10">
-                </li>
-                <li>
-                    <label for="borderRadiusRB">border-radius-right-bottom:100px;</label>
-                    <input id="borderRadiusRB" type="range" min="-10" step="1" max="10">
+                    <label for="borderRadiusLB">border-radius-left-bottom:<span class="output">0</span>px;</label>
+                    <input id="borderRadiusLB" type="range" min="0" step="1" max="75" value="0">
                 </li>
             </ul>
         </div>
@@ -57,32 +62,32 @@
                     transform
                 </li>
                 <li>
-                    <label for="translateX">translateX(100px)</label>
-                    <input id="translateX" type="range" min="-10" step="1" max="10">
+                    <label for="translateX">translateX(<span class="output">0</span>px)</label>
+                    <input id="translateX" type="range" min="-150" step="1" max="150" value="0">
                 </li>
                 <li>
-                    <label for="translateY">translateY(100px)</label>
-                    <input id="translateY" type="range" min="-10" step="1" max="10">
+                    <label for="translateY">translateY(<span class="output">0</span>px)</label>
+                    <input id="translateY" type="range" min="-150" step="1" max="150" value="0">
                 </li>
                 <li>
-                    <label for="rotate">rotate(360deg)</label>
-                    <input id="rotate" type="range" min="-10" step="1" max="10">
+                    <label for="rotate">rotate(<span class="output">0</span>deg)</label>
+                    <input id="rotate" type="range" min="-360" step="5" max="360" value="0">
                 </li>
                 <li>
-                    <label for="scaleX">scaleX(0.5)</label>
-                    <input id="scaleX" type="range" min="-10" step="1" max="10">
+                    <label for="scaleX">scaleX(<span class="output">1</span>)</label>
+                    <input id="scaleX" type="range" min="0.1" step="0.1" max="4" value="1">
                 </li>
                 <li>
-                    <label for="scaleY">scaleY(0.5)</label>
-                    <input id="scaleY" type="range" min="-10" step="1" max="10">
+                    <label for="scaleY">scaleY(<span class="output">1</span>)</label>
+                    <input id="scaleY" type="range" min="0.1" step="0.1" max="4" value="1">
                 </li>
                 <li>
-                    <label for="skewX">skewX(100deg)</label>
-                    <input id="skewX" type="range" min="-10" step="1" max="10">
+                    <label for="skewX">skewX(<span class="output">0</span>deg)</label>
+                    <input id="skewX" type="range" min="-360" step="5" max="360" value="0">
                 </li>
                 <li>
-                    <label for="skewY">skewY(100deg)</label>
-                    <input id="skewY" type="range" min="-10" step="1" max="10">
+                    <label for="skewY">skewY(<span class="output">0</span>deg)</label>
+                    <input id="skewY" type="range" min="-360" step="5" max="360" value="0">
                 </li>
             </ul>
         </div>
@@ -90,11 +95,37 @@
             <ul>
             </ul>
         </div>
-        <!--<div class="code-show">-->
-            <!--<div></div>-->
-        <!--</div>-->
     </div>
-    <div style="position: fixed;left: 508px;top: 83px;background-color: #ded8ec;width: 100%;height:100%;">ppp
+    <div class="right-container">
+        <div class="code-show">
+            <button>查看完整代码</button>
+            <div>transform:translate(<span>100px,100px</span>)&nbsp;rotate(<span>100deg</span>)&nbsp;scale(<span>1.1,1.1</span>)&nbsp;skew(<span>100deg,100deg</span>);</div>
+            <div>border-radius:<span>10px</span>&nbsp;<span>10px</span>&nbsp;<span>10px</span>&nbsp;<span>10px</span>;</div>
+            <div>transition:all&nbsp;<span>0.5s</span>&nbsp;cubic-bezier(<span>0.5,0.5,0.5,0.5</span>)&nbsp<span>0.5s</span>;</div>
+        </div>
+        <canvas id="transformBlock">
+            您的浏览器不支持canvas
+        </canvas>
     </div>
+    <script src="main.js"></script>
+    <script>
+        /*导航切换逻辑*/
+        (function() {
+            var blocks=document.getElementsByClassName("operation-block");
+            var navs=byId("navControl").getElementsByTagName("li");
+            byId("navControl").addEventListener("click", function (e) {
+                if (e.target.getAttribute("data-target") != null) {
+                    for(var i=0;i<blocks.length;i++){
+                        blocks[i].style.display="none";
+                        if(navs[i].className.match(new RegExp('(\\s|^)active(\\s|$)'))){
+                            navs[i].className="";
+                        }
+                    }
+                    e.target.className="active";
+                    blocks[e.target.getAttribute("data-target")].style.display="block";
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
