@@ -23,7 +23,7 @@
  *方法：
  *  鼠标位置获取
  *  值转换（将鼠标位置转换为transition值，和将transition值转换为鼠标位置）
- *  监听控制点，并操作
+ *  监听控制点,滑块，并操作
  *
  *
  *
@@ -126,8 +126,9 @@ transitionMaker.getController=function(bodyElement,parentElement,element,name){
         transitionMaker.mousePosition.y= y;
         transitionMaker.using[name]=transitionMaker.mouseToPoint(x,y);
         transitionMaker.changeData();
+        /*实时绘制贝塞尔曲线*/
         transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
-        transitionMaker.drawBezier(byId("transformBlock"),"#ffffff","#ffffff");
+        transitionMaker.drawBezier(byId("basicTransformBlock"),"#ffffff","#ffffff");
         transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
         transitionMaker.basicAttrShow(byId("basicAttrShow"));
     }
@@ -196,7 +197,7 @@ transitionMaker.listenRange=function(parentElement){
             }
         }
     });
-    /*监听鼠标操作range*/
+    /*监听键盘操作range*/
     parentElement.addEventListener("change",function(e){
         if(e.target.tagName=="input" || e.target.tagName=="INPUT"){
             e.target.parentNode.getElementsByClassName("output")[0].innerHTML= e.target.value;
@@ -235,7 +236,7 @@ transitionMaker.playAnimation=function(clickElement,animationElement){
        // console.log(transitionMaker.animating);
         if(transitionMaker.animating==false) {
             animationElement.setAttribute("style","");
-            clickElement.innerHTML="复位";
+            clickElement.innerHTML="回到起点";
             transitionMaker.animating = true;
             animationElement.setAttribute("style", transitionMaker.transformAttr + "" + transitionMaker.borderRadiusAttr + "" + transitionMaker.transitionAttr);
         }else{
@@ -252,8 +253,6 @@ transitionMaker.playAnimation=function(clickElement,animationElement){
  *   画布
 */
 transitionMaker.init=function(){
-};
-window.onload=function(){
     transitionMaker.listenRange(byId("operationArea"));
     transitionMaker.property=byId("property");
     transitionMaker.duration=byId("duration");
@@ -263,4 +262,7 @@ window.onload=function(){
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
     transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
     transitionMaker.playAnimation(byId("play"),byId("basicTransformBlock"));
+};
+window.onload=function(){
+    transitionMaker.init();
 };
