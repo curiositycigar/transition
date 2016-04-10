@@ -217,8 +217,7 @@ transitionMaker.getTransformBlockCss=function(element){
  *   初始变量
  *   画布
 */
-transitionMaker.init=function(property,duration,bezier,delay,canvas){
-    transitionMaker.property=byId("property");
+transitionMaker.init=function(){
 };
 window.onload=function(){
     transitionMaker.listenRange(byId("operationArea"));
