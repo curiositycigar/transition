@@ -40,6 +40,7 @@ var transitionMaker={
     canvasBezier:null,
     bezierTitle:null,
     //
+    animating:false,//是否正在播放动画
     controller:{},
     target:{},
     using:{
@@ -53,9 +54,9 @@ var transitionMaker={
         scaleX:1,scaleY:1,
         skewX:0,skewY:0
     },
-    transitionAttr:null,
-    borderRadiusAttr:null,
-    transformAttr:null,
+    transitionAttr:"",
+    borderRadiusAttr:"",
+    transformAttr:"",
     mousePosition:{x:1,y:1}//鼠标位置
 };
 transitionMaker.propertyLib=[];
@@ -91,8 +92,8 @@ transitionMaker.pointToMouse=function(px,py){
     return {x:(px*200)+150,y:350-(py*200)};
 };
 /*
-* 获取控制点
-*   传参（控制点，控制点名）
+* 获取贝塞尔曲线控制点
+*
 */
 transitionMaker.getController=function(bodyElement,parentElement,element,name){
     var control=null;
@@ -127,6 +128,8 @@ transitionMaker.getController=function(bodyElement,parentElement,element,name){
         transitionMaker.changeData();
         transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
         transitionMaker.drawBezier(byId("transformBlock"),"#ffffff","#ffffff");
+        transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
+        transitionMaker.basicAttrShow(byId("basicAttrShow"));
     }
     /*
      * 添加监听事件
@@ -189,6 +192,7 @@ transitionMaker.listenRange=function(parentElement){
                 e.target.parentNode.getElementsByClassName("output")[0].innerHTML= e.target.value;
                 transitionMaker.using[e.target.id]= e.target.value;
                 transitionMaker.getTransformBlockCss(byId("transformBlock"));
+                transitionMaker.basicAttrShow(byId("basicAttrShow"));
             }
         }
     });
@@ -197,20 +201,50 @@ transitionMaker.listenRange=function(parentElement){
         if(e.target.tagName=="input" || e.target.tagName=="INPUT"){
             e.target.parentNode.getElementsByClassName("output")[0].innerHTML= e.target.value;
             transitionMaker.using[e.target.id]= e.target.value;
+            transitionMaker.getTransformBlockCss(byId("transformBlock"));
+            transitionMaker.basicAttrShow(byId("basicAttrShow"));
         }
     });
 };
+/*
+ *得到改变后的css值
+ *改变目标的css值
+ * 展示基本css属性
+*/
 transitionMaker.getTransformBlockCss=function(element){
-    transitionMaker.transitionAttr="transition: all "+transitionMaker.using.duration+"s cubic-bezier("+transitionMaker.using.p1.x+","+transitionMaker.using.p1.y+","+transitionMaker.using.p2.x+","+transitionMaker.using.p2.y+") "+transitionMaker.using.delay+"s;";
     transitionMaker.borderRadiusAttr="border-radius:"+transitionMaker.using.borderRadiusLT+"px "+transitionMaker.using.borderRadiusRT+"px "+transitionMaker.using.borderRadiusRB+"px "+transitionMaker.using.borderRadiusLB+"px;";
     transitionMaker.transformAttr="transform:"
         +((transitionMaker.using.translateX==0)&&(transitionMaker.using.translateY==0)?"":(" translate("+transitionMaker.using.translateX+"px,"+transitionMaker.using.translateY+"px)"))
         +(transitionMaker.using.rotate==0?"":" rotate("+transitionMaker.using.rotate+"deg)")
         +((transitionMaker.using.scaleX==0)&&(transitionMaker.using.scaleY==0)?"":(" scale("+transitionMaker.using.scaleX+","+transitionMaker.using.scaleY+")"))
-        +((transitionMaker.using.skewX==0)&&(transitionMaker.using.skewY==0)?"":(" skew("+transitionMaker.using.skewX+"deg,"+transitionMaker.using.skewY+"deg)"));
-    console.log(transitionMaker.transformAttr);
-    element.setAttribute("style",transitionMaker.transformAttr);
-    element.style.borderRadius=transitionMaker.using.borderRadiusLT+"px "+transitionMaker.using.borderRadiusRT+"px "+transitionMaker.using.borderRadiusRB+"px "+transitionMaker.using.borderRadiusLB+"px";
+        +((transitionMaker.using.skewX==0)&&(transitionMaker.using.skewY==0)?"":(" skew("+transitionMaker.using.skewX+"deg,"+transitionMaker.using.skewY+"deg)"))+";";
+    transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
+    element.setAttribute("style",transitionMaker.transformAttr+transitionMaker.borderRadiusAttr);
+};
+transitionMaker.getTransitionAttr=function(){
+    return "transition: all "+transitionMaker.using.duration+"s cubic-bezier("+transitionMaker.using.p1.x.toFixed(2)+","+transitionMaker.using.p1.y.toFixed(2)+","+transitionMaker.using.p2.x.toFixed(2)+","+transitionMaker.using.p2.y.toFixed(2)+") "+transitionMaker.using.delay+"s;";
+};
+transitionMaker.basicAttrShow=function(element){
+    element.innerHTML=transitionMaker.transformAttr+"<br>"+transitionMaker.borderRadiusAttr+"<br>"+transitionMaker.transitionAttr;
+};
+/*
+* 播放动画
+*/
+transitionMaker.playAnimation=function(clickElement,animationElement){
+    clickElement.onclick=function(){
+       // console.log(transitionMaker.animating);
+        if(transitionMaker.animating==false) {
+            animationElement.setAttribute("style","");
+            clickElement.innerHTML="复位";
+            transitionMaker.animating = true;
+            animationElement.setAttribute("style", transitionMaker.transformAttr + "" + transitionMaker.borderRadiusAttr + "" + transitionMaker.transitionAttr);
+        }else{
+            transitionMaker.animating = false;
+            clickElement.innerHTML="查看动画演示";
+            animationElement.setAttribute("style","");
+        }
+    }
+
 };
 /*
  *初始化
@@ -229,4 +263,5 @@ window.onload=function(){
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p1"),"p1");
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
     transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
+    transitionMaker.playAnimation(byId("play"),byId("basicTransformBlock"));
 };
