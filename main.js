@@ -344,7 +344,7 @@ transitionMaker.initPage=function(){
     transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
     var i;
     for(var item in transitionMaker.using){
-        if(transitionMaker.using[item]!="object") {
+        if(typeof(transitionMaker.using[item])!="object") {
             ranges[i].setAttribute("value", transitionMaker.using[item]);
             ranges[i].parentNode.getElementsByClassName("output")[0].innerHTML = transitionMaker.using[item];
             ++i;
