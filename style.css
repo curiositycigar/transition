@@ -1,5 +1,5 @@
 /*一些初始化*/
-html,body,div,canvas,h1,h2,h3,button,ul,li{ margin: 0;padding: 0;}
+html,body,div,canvas,h1,h2,h3,button,ul,li,textarea{ margin: 0;padding: 0;}
 html{
     height: 100%;
 }
@@ -272,12 +272,15 @@ input[type=range]:focus::-ms-fill-upper {
 .operation-block ul{
     margin:0 50px;
 }
+/*
+ * 库操作区
+*/
 #library{overflow-y: scroll;}
 #library div{
 	 position: relative;
     float: left;
     width: 100px;
-    height: 140px;
+    height: 100px;
     margin-left: 25px;
     margin-bottom: 20px;
 }
@@ -285,24 +288,17 @@ input[type=range]:focus::-ms-fill-upper {
     background-color: #6c7cbb;
     margin-bottom: 10px;
 }
-#library a{
-    display: block;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    width: 98px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    border: 1px solid #8c9ed5;
-    background-color: #ded8ec;
-}
-#library .view-code,#library .view-animation{
+#library .view-code,#library a{
 	position: absolute;
+	display: block;
 	opacity: 0;
    filter:alpha(opacity=0);
+   font-size: 14px;
+   font-weight: 600;
 	width: 100px;
 	height: 50px;
+	line-height: 50px;
+	text-align: center;
 	background-color: #6c7cbb;
 	border: none;
 	color: #ffffff;
@@ -327,20 +323,17 @@ input[type=range]:focus::-ms-fill-upper {
 	left: 0;
 	top: 0;
 }
-#library .view-animation{
+#library a{
+	text-decoration: none;
 	left: 0;
 	top: 50px;
 }
-#library div:hover>button{
+#library div:hover>button,#library div:hover>a{
 	opacity: 0.7;
    filter:alpha(opacity=70);
 }
-#library button:hover{
+#library button:hover,#library a:hover{
 	background-color: #362c34;
-}
-#library a:hover{
-    color: #ffffff;
-    background-color: #8c9ed5;
 }
 /*
  * canvas title
@@ -448,10 +441,17 @@ label,input{
  *
  *
 */
-/*
-****库
-****展示已存储transition效果
-*/
-#libContainer{
-
+#code{
+	display: none;
+	position: fixed;
+	z-index: 300;
+	left: 50%;
+	top: 50%;
+	width: 500px;
+	height: 400px;
+	margin-left: -265px;
+	margin-top: -215px;
+	background-color: #dddddd;
+	border: 20px solid #362c34;
+	padding: 10px;
 }

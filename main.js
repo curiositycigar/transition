@@ -28,11 +28,7 @@ function byId(id){
 * 定义命名空间transitionMaker
 */
 var transitionMaker={
-    //
-    canvasBezier:null,
     bezierTitle:null,//贝塞尔曲线信息显示
-    controller:{},
-    target:{},
     using:{
         p1:{x:0.5,y:0.75},
         p2:{x:0.75,y:0.5},
@@ -59,14 +55,16 @@ var transitionMaker={
     transitionAttr:"",
     borderRadiusAttr:"",
     transformAttr:"",
-    mousePosition:{x:1,y:1}//鼠标位置
+    mousePosition:{x:1,y:1},//鼠标位置
+    codeBlock:null
 };
 transitionMaker.lib=[
 	"0.73,0.435,0.645,-0.435,1,0,75,75,75,75,0,0,360,1,1,0,0,",
 	"0.74,0.14,0.845,0.125,1,0,75,0,75,75,0,0,315,1,1,0,0,",
 	"0.74,0.14,0.845,0.125,1,0,75,75,75,75,150,0,360,0.2,0.2,0,0,",
 	"1,0.315,0.695,1.5,1,0,75,75,75,75,2,0,360,1,1,0,0,",
-	"0.94,1.305,0.885,1.02,1,0,0,0,0,0,150,0,360,0.2,0.2,0,0,"
+	"0.94,1.305,0.885,1.02,1,0,0,0,0,0,150,0,360,0.2,0.2,0,0,",
+	"1,1.405,0.275,0.97,1,0,75,75,75,75,150,0,360,0.2,0.2,0,0,"
 	];
 /*
 *监听鼠标移动
@@ -138,7 +136,7 @@ transitionMaker.getController=function(bodyElement,parentElement,element,name){
         transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
         transitionMaker.drawBezier(byId("basicTransformBlock"),"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
         transitionMaker.drawBezier(byId("transformBlock"),"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
-        transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
+        transitionMaker.transitionAttr=transitionMaker.getTransitionAttr(transitionMaker.using);
         transitionMaker.basicAttrShow(byId("basicAttrShow"));
     }
     /*
@@ -192,7 +190,7 @@ transitionMaker.listenRange=function(parentElement){
         if(e.target.tagName=="input" || e.target.tagName=="INPUT"){
             e.target.parentNode.getElementsByClassName("output")[0].innerHTML= e.target.value;
             transitionMaker.using[e.target.id]= e.target.value;
-            transitionMaker.getTransformBlockCss(byId("transformBlock"));
+            transitionMaker.getTransformBlockCss(byId("transformBlock"),transitionMaker.using);
             transitionMaker.basicAttrShow(byId("basicAttrShow"));
         }
     },false);
@@ -202,22 +200,44 @@ transitionMaker.listenRange=function(parentElement){
  *改变目标的css值
  * 展示基本css属性
 */
-transitionMaker.getTransformBlockCss=function(element){
-    transitionMaker.borderRadiusAttr="border-radius:"+transitionMaker.using.borderRadiusLT+"px "+transitionMaker.using.borderRadiusRT+"px "+transitionMaker.using.borderRadiusRB+"px "+transitionMaker.using.borderRadiusLB+"px;";
-    transitionMaker.transformAttr="transform:"
-        +((transitionMaker.using.translateX==0)&&(transitionMaker.using.translateY==0)?"":(" translate("+transitionMaker.using.translateX+"px,"+transitionMaker.using.translateY+"px)"))
-        +(transitionMaker.using.rotate==0?"":" rotate("+transitionMaker.using.rotate+"deg)")
-        +((transitionMaker.using.scaleX==0)&&(transitionMaker.using.scaleY==0)?"":(" scale("+transitionMaker.using.scaleX+","+transitionMaker.using.scaleY+")"))
-        +((transitionMaker.using.skewX==0)&&(transitionMaker.using.skewY==0)?"":(" skew("+transitionMaker.using.skewX+"deg,"+transitionMaker.using.skewY+"deg)"))+";";
-    transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
-    element.setAttribute("style",transitionMaker.transformAttr+transitionMaker.borderRadiusAttr);
+transitionMaker.getTransformBlockCss=function(element,object){
+    	 transitionMaker.borderRadiusAttr="border-radius:"+object.borderRadiusLT+"px "+object.borderRadiusRT+"px "+object.borderRadiusRB+"px "+object.borderRadiusLB+"px;";
+    	 transitionMaker.transformAttr="transform:"
+        +((object.translateX==0)&&(object.translateY==0)?"":(" translate("+object.translateX+"px,"+object.translateY+"px)"))
+        +(object.rotate==0?"":" rotate("+object.rotate+"deg)")
+        +((object.scaleX==0)&&(object.scaleY==0)?"":(" scale("+object.scaleX+","+object.scaleY+")"))
+        +((object.skewX==0)&&(object.skewY==0)?"":(" skew("+object.skewX+"deg,"+object.skewY+"deg)"))+";";
+     	 transitionMaker.transitionAttr=transitionMaker.getTransitionAttr(object);
+       element.setAttribute("style",transitionMaker.transformAttr+transitionMaker.borderRadiusAttr);
 };
-transitionMaker.getTransitionAttr=function(){
-    return "transition: all "+transitionMaker.using.duration+"s cubic-bezier("+transitionMaker.using.p1.x.toFixed(2)+","+transitionMaker.using.p1.y.toFixed(2)+","+transitionMaker.using.p2.x.toFixed(2)+","+transitionMaker.using.p2.y.toFixed(2)+") "+transitionMaker.using.delay+"s;";
+transitionMaker.getTransitionAttr=function(object){
+    return "transition: all "+object.duration+"s cubic-bezier("+object.p1.x.toFixed(2)+","+object.p1.y.toFixed(2)+","+object.p2.x.toFixed(2)+","+object.p2.y.toFixed(2)+") "+object.delay+"s;";
 };
 transitionMaker.basicAttrShow=function(element){
     element.innerHTML=transitionMaker.transformAttr+"<br>"+transitionMaker.borderRadiusAttr+"<br>"+transitionMaker.transitionAttr;
 };
+/*
+ * 得到完整的CSS属性
+ * yayayyayayayyaya！！！！
+*/
+transitionMaker.getFullCssAttribute=function(object){
+	var fullAttribute="";
+	var prefix=["","-o-","-ms-","-moz-","-webkit-"];
+	var attribute=[];
+	attribute.push("border-radius:"+object.borderRadiusLT+"px "+object.borderRadiusRT+"px "+object.borderRadiusRB+"px "+object.borderRadiusLB+"px;");
+	attribute.push("transform:"
+        +((object.translateX==0)&&(object.translateY==0)?"":(" translate("+object.translateX+"px,"+object.translateY+"px)"))
+        +(object.rotate==0?"":" rotate("+object.rotate+"deg)")
+        +((object.scaleX==0)&&(object.scaleY==0)?"":(" scale("+object.scaleX+","+object.scaleY+")"))
+        +((object.skewX==0)&&(object.skewY==0)?"":(" skew("+object.skewX+"deg,"+object.skewY+"deg)"))+";");
+	attribute.push(transitionMaker.getTransitionAttr(object));
+	for(var item in attribute){
+		for(var i in prefix){
+			fullAttribute+=prefix[i]+attribute[item]+"\n";
+		}
+	}
+	return fullAttribute;
+}
 /*
 * 检查参数的正确性
 */
@@ -278,7 +298,7 @@ transitionMaker.cloneArrayToObject=function(array,object){
         }
     }
 };
-/*将using数组转化为参数*/
+/*将using对象转化为参数*/
 transitionMaker.cloneObjectToParameter=function(object){
     parameter="";
     clone(object);
@@ -339,7 +359,7 @@ transitionMaker.initPage=function(){
             ++i;
         }
     }
-    transitionMaker.getTransformBlockCss(byId("transformBlock"));
+    transitionMaker.getTransformBlockCss(byId("transformBlock"),transitionMaker.using);
 };
 /*
  * 创建lib元素
@@ -349,19 +369,16 @@ transitionMaker.createLibraryElement=function(libraryElement,parameter,index){
         var div=document.createElement("div");
         var canvas=document.createElement("canvas");
         var btnTop=document.createElement("button");
-        var btnBottom=document.createElement("button");
         var btnDelete=document.createElement("button");
         var a=document.createElement("a");
         canvas.width=100;
         canvas.height=100;
         btnTop.setAttribute("class","view-code");
         btnTop.innerHTML="view code";
-        btnBottom.setAttribute("class","view-animation");
-        btnBottom.innerHTML="view animation";
         btnDelete.setAttribute("class","delete");
         btnDelete.innerHTML="X";
         a.target="_blank";
-        a.innerHTML="在新窗口查看";
+        a.innerHTML="新窗口打开";
     	  if(arguments[1]){
     	  	   div.setAttribute("data-for",index);
     	  		var arr=parameter.split(',').map(function(value){ return parseFloat(value)});
@@ -374,7 +391,6 @@ transitionMaker.createLibraryElement=function(libraryElement,parameter,index){
     	  }
         div.appendChild(canvas);
         div.appendChild(btnTop);
-        div.appendChild(btnBottom);
         div.appendChild(btnDelete);
         div.appendChild(a);
         libraryElement.appendChild(div);
@@ -404,20 +420,34 @@ transitionMaker.operationLibraryItem=function(library){
 		if(e.target.getAttribute("class")=="delete"){
 			transitionMaker.lib.splice(e.target.parentElement.getAttribute("data-for"),1);
 			e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+			console.log(transitionMaker.lib);
 		}else if(e.target.getAttribute("class")=="view-code") {
-			console.log("view-code");
-		}else if(e.target.getAttribute("class")=="view-animation"){
-			console.log("view-animation");
+			transitionMaker.cloneArrayToObject(transitionMaker.lib[e.target.parentElement.getAttribute("data-for")].split(",").map(function(value){ return parseFloat(value)}),transitionMaker.spare);
+			transitionMaker.codeBlock.value=transitionMaker.getFullCssAttribute(transitionMaker.spare);
+			transitionMaker.codeBlock.style.display="block";
+			transitionMaker.codeBlock.focus();
 		}
+	},false);
+}
+/*
+ * 查看代码
+*/
+transitionMaker.getCode=function(clickElement){
+	clickElement.addEventListener("click",function(){
+		transitionMaker.codeBlock.value=transitionMaker.getFullCssAttribute(transitionMaker.using);
+		transitionMaker.codeBlock.style.display="block";
+		transitionMaker.codeBlock.focus();
 	},false);
 }
 /*
  *初始化
 */
 transitionMaker.init=function(){
+	 transitionMaker.codeBlock=byId("code");
     transitionMaker.bezierTitle=byId("bezierTitle");
     transitionMaker.getParameter();
     transitionMaker.initPage();
+    transitionMaker.getCode(byId("showCode"));
     transitionMaker.playAnimation(byId("play"),byId("basicTransformBlock"));
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p1"),"p1");
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
@@ -425,6 +455,7 @@ transitionMaker.init=function(){
     transitionMaker.operationLibraryItem(byId("library"));
     transitionMaker.readLibrary();
     transitionMaker.addToLibrary(byId("addToLibrary"),byId("library"));
+    transitionMaker.getFullCssAttribute(transitionMaker.using);
 };
 window.onload=function(){
     transitionMaker.init();
