@@ -17,16 +17,6 @@
      //17位参数
      #0.50,0.75,0.75,0.50,1,1,  0,0,0,0,  0,0,  0,  1,1,0,0
  *库:lib当前库，lib是一个数组
- *属性：
- *  DOM对象
- *  当前画板属性(p1,p2坐标)
- *  当前区域属性
- *  展示中属性
- *方法：
- *  鼠标位置获取
- *  值转换（将鼠标位置转换为transition值，和将transition值转换为鼠标位置）
- *  监听控制点,滑块，并操作
- *
  *
  *
  *
@@ -40,10 +30,7 @@ function byId(id){
 var transitionMaker={
     //
     canvasBezier:null,
-    bezierTitle:null,
-    //
-    parameterArray:null,
-    animating:false,//是否正在播放动画
+    bezierTitle:null,//贝塞尔曲线信息显示
     controller:{},
     target:{},
     using:{
@@ -62,8 +49,7 @@ var transitionMaker={
     transformAttr:"",
     mousePosition:{x:1,y:1}//鼠标位置
 };
-transitionMaker.propertyLib=[];
-transitionMaker.lib=[];
+transitionMaker.lib=["0.73,0.435,0.645,-0.435,1,0,75,75,75,75,0,0,360,1,1,0,0,"];
 /*
 *监听鼠标移动
 */
@@ -131,9 +117,9 @@ transitionMaker.getController=function(bodyElement,parentElement,element,name){
         //console.log(transitionMaker.using[name]);
         transitionMaker.changeData();
         /*实时绘制贝塞尔曲线*/
-        transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
-        transitionMaker.drawBezier(byId("basicTransformBlock"),"#ffffff","#ffffff");
-        transitionMaker.drawBezier(byId("transformBlock"),"#ffffff","#ffffff");
+        transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
+        transitionMaker.drawBezier(byId("basicTransformBlock"),"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
+        transitionMaker.drawBezier(byId("transformBlock"),"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
         transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
         transitionMaker.basicAttrShow(byId("basicAttrShow"));
     }
@@ -158,12 +144,10 @@ transitionMaker.changeData=function (){
 /*
 * 绘制贝塞尔曲线
 */
-transitionMaker.drawBezier=function(canvas,colorLine,colorBezier){
+transitionMaker.drawBezier=function(canvas,colorLine,colorBezier,x1,y1,x2,y2){
     var context2d=canvas.getContext('2d');
-//    var p1=transitionMaker.pointToCnavas(transitionMaker.using.p1.x,transitionMaker.using.p1.y);
-//    var p2=transitionMaker.pointToCnavas(transitionMaker.using.p2.x,transitionMaker.using.p2.y);
-    var p1={x:(transitionMaker.using.p1.x*canvas.width*2/3)+canvas.width/6,y:canvas.height-transitionMaker.using.p1.y*canvas.height/2-canvas.height/4};
-    var p2={x:(transitionMaker.using.p2.x*canvas.width*2/3)+canvas.width/6,y:canvas.height-transitionMaker.using.p2.y*canvas.height/2-canvas.height/4};
+    var p1={x:(x1*canvas.width*2/3)+canvas.width/6,y:canvas.height-y1*canvas.height/2-canvas.height/4};
+    var p2={x:(x2*canvas.width*2/3)+canvas.width/6,y:canvas.height-y2*canvas.height/2-canvas.height/4};
     context2d.clearRect(0,0,canvas.width,canvas.height);
     context2d.strokeStyle=colorLine;
     context2d.lineWidth=2;
@@ -274,7 +258,6 @@ transitionMaker.getParameter=function(){
         });
         //检查参数是否正确
         if(transitionMaker.checkParameter(parameterArray)){
-            transitionMaker.parameterArray=parameterArray;
             //填参数
             transitionMaker.cloneArrayToObject(parameterArray,transitionMaker.using);
         }else{
@@ -334,6 +317,7 @@ transitionMaker.playAnimation=function(clickElement,animationElement){
 * 根据参数初始化页面
 */
 transitionMaker.initPage=function(){
+	//将贝塞尔曲线坐标转化为页面坐标
     var p1=transitionMaker.pointToMouse(transitionMaker.using.p1.x,transitionMaker.using.p1.y);
     var p2=transitionMaker.pointToMouse(transitionMaker.using.p2.x,transitionMaker.using.p2.y);
     var ranges=document.getElementsByTagName("input");
@@ -342,9 +326,11 @@ transitionMaker.initPage=function(){
     byId("p2").style.left=p2.x+"px";
     byId("p2").style.top=p2.y+"px";
     console.log("point done");
-    transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
+    //绘制贝塞尔曲线
+    transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
     console.log("bezier down");
     var i=0;
+    //设置range的value值
     for(var item in transitionMaker.using){
         if(typeof(transitionMaker.using[item])!="object") {
             ranges[i].setAttribute("value", transitionMaker.using[item]);
@@ -355,15 +341,20 @@ transitionMaker.initPage=function(){
     transitionMaker.getTransformBlockCss(byId("transformBlock"));
 };
 /*
-* 加入library
+ * 创建lib元素
 */
-transitionMaker.addToLibrary=function(clickElement,libraryElement){
-    clickElement.onclick=function () {
+transitionMaker.createLibraryElement=function(libraryElement,parameter){
+    	  //创建元素并添加到library
         var div=document.createElement("div");
         var canvas=document.createElement("canvas");
         canvas.width=100;
         canvas.height=100;
-        transitionMaker.drawBezier(canvas,"#ffffff","#ffffff");
+    	  if(arguments[1]){
+    	  		var arr=parameter.split(',').map(function(value){ return parseFloat(value)});
+        		transitionMaker.drawBezier(canvas,"#ffffff","#ffffff",arr[0],arr[1],arr[2],arr[3]);
+    	  }else{
+        		transitionMaker.drawBezier(canvas,"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
+    	  }
         var a=document.createElement("a");
         a.target="_blank";
         a.innerHTML="在新窗口查看";
@@ -371,8 +362,24 @@ transitionMaker.addToLibrary=function(clickElement,libraryElement){
         div.appendChild(canvas);
         div.appendChild(a);
         libraryElement.appendChild(div);
+}
+/*
+* 加入library
+*/
+transitionMaker.addToLibrary=function(clickElement,libraryElement){
+    clickElement.onclick=function () {
+		  transitionMaker.createLibraryElement(byId("library"));
+        //添加到lib数组
+        transitionMaker.lib.push(transitionMaker.cloneObjectToParameter(transitionMaker.using));
+        console.log(transitionMaker.lib);
     }
 };
+/*读取lib数组,初始化library模块*/
+transitionMaker.readLibrary=function(){
+	for (var item in transitionMaker.lib) {
+		transitionMaker.createLibraryElement(byId("library"),transitionMaker.lib[item]);
+	}
+}
 /*
  *初始化
 */
@@ -380,10 +387,11 @@ transitionMaker.init=function(){
     transitionMaker.bezierTitle=byId("bezierTitle");
     transitionMaker.getParameter();
     transitionMaker.initPage();
-    transitionMaker.listenRange(byId("operationArea"));
+    transitionMaker.playAnimation(byId("play"),byId("basicTransformBlock"));
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p1"),"p1");
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
-    transitionMaker.playAnimation(byId("play"),byId("basicTransformBlock"));
+    transitionMaker.listenRange(byId("operationArea"));
+    transitionMaker.readLibrary();
     transitionMaker.addToLibrary(byId("addToLibrary"),byId("library"));
 };
 window.onload=function(){
