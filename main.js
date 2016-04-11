@@ -341,8 +341,10 @@ transitionMaker.initPage=function(){
     byId("p1").style.top=p1.y+"px";
     byId("p2").style.left=p2.x+"px";
     byId("p2").style.top=p2.y+"px";
+    console.log("point done");
     transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
-    var i;
+    console.log("bezier down");
+    var i=0;
     for(var item in transitionMaker.using){
         if(typeof(transitionMaker.using[item])!="object") {
             ranges[i].setAttribute("value", transitionMaker.using[item]);
@@ -356,7 +358,20 @@ transitionMaker.initPage=function(){
 * 加入library
 */
 transitionMaker.addToLibrary=function(clickElement,libraryElement){
-    document.createElement("div");
+    clickElement.onclick=function () {
+        var div=document.createElement("div");
+        var canvas=document.createElement("canvas");
+        canvas.width=100;
+        canvas.height=100;
+        transitionMaker.drawBezier(canvas,"#ffffff","#ffffff");
+        var a=document.createElement("a");
+        a.target="_blank";
+        a.innerHTML="在新窗口查看";
+        a.href="#"+transitionMaker.cloneObjectToParameter(transitionMaker.using);
+        div.appendChild(canvas);
+        div.appendChild(a);
+        libraryElement.appendChild(div);
+    }
 };
 /*
  *初始化
@@ -364,12 +379,12 @@ transitionMaker.addToLibrary=function(clickElement,libraryElement){
 transitionMaker.init=function(){
     transitionMaker.bezierTitle=byId("bezierTitle");
     transitionMaker.getParameter();
-    //transitionMaker.initPage();
+    transitionMaker.initPage();
     transitionMaker.listenRange(byId("operationArea"));
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p1"),"p1");
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
-    transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
     transitionMaker.playAnimation(byId("play"),byId("basicTransformBlock"));
+    transitionMaker.addToLibrary(byId("addToLibrary"),byId("library"));
 };
 window.onload=function(){
     transitionMaker.init();
