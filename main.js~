@@ -44,6 +44,7 @@ var transitionMaker={
         scaleX:1,scaleY:1,
         skewX:0,skewY:0
     },
+    animating:false,
     transitionAttr:"",
     borderRadiusAttr:"",
     transformAttr:"",
@@ -349,16 +350,17 @@ transitionMaker.createLibraryElement=function(libraryElement,parameter){
         var canvas=document.createElement("canvas");
         canvas.width=100;
         canvas.height=100;
-    	  if(arguments[1]){
-    	  		var arr=parameter.split(',').map(function(value){ return parseFloat(value)});
-        		transitionMaker.drawBezier(canvas,"#ffffff","#ffffff",arr[0],arr[1],arr[2],arr[3]);
-    	  }else{
-        		transitionMaker.drawBezier(canvas,"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
-    	  }
         var a=document.createElement("a");
         a.target="_blank";
         a.innerHTML="在新窗口查看";
-        a.href="#"+transitionMaker.cloneObjectToParameter(transitionMaker.using);
+    	  if(arguments[1]){
+    	  		var arr=parameter.split(',').map(function(value){ return parseFloat(value)});
+        		transitionMaker.drawBezier(canvas,"#ffffff","#ffffff",arr[0],arr[1],arr[2],arr[3]);
+            a.href="#"+parameter;
+    	  }else{
+        		transitionMaker.drawBezier(canvas,"#ffffff","#ffffff",transitionMaker.using.p1.x,transitionMaker.using.p1.y,transitionMaker.using.p2.x,transitionMaker.using.p2.y);
+            a.href="#"+transitionMaker.cloneObjectToParameter(transitionMaker.using);
+    	  }
         div.appendChild(canvas);
         div.appendChild(a);
         libraryElement.appendChild(div);
