@@ -14,6 +14,8 @@
          scaleX:1,scaleY:1,
          skewX:0,skewY:0
      }
+     //17位参数
+     #0.50,0.75,0.75,0.50,1,1,  0,0,0,0,  0,0,  0,  1,1,0,0
  *库:lib当前库，lib是一个数组
  *属性：
  *  DOM对象
@@ -40,6 +42,7 @@ var transitionMaker={
     canvasBezier:null,
     bezierTitle:null,
     //
+    parameterArray:null,
     animating:false,//是否正在播放动画
     controller:{},
     target:{},
@@ -86,10 +89,10 @@ transitionMaker.getMousePosition=function(elementParent,element){
  *值转换
  */
 transitionMaker.mouseToPoint=function(mx,my){
-    return {x:(mx-150)/200,y:(350-my)/200};
+    return {x:(mx-100)/200,y:(350-my)/200};
 };
 transitionMaker.pointToMouse=function(px,py){
-    return {x:(px*200)+150,y:350-(py*200)};
+    return {x:(px*200)+100,y:350-(py*200)};
 };
 /*
 * 获取贝塞尔曲线控制点
@@ -99,15 +102,15 @@ transitionMaker.getController=function(bodyElement,parentElement,element,name){
     var control=null;
     /*获取坐标*/
     var m=transitionMaker.getMousePosition(bodyElement,parentElement);
-    /*保证控制点在canvas画布内*/
+    /*保证控制点在canvas画布的正确范围内*/
     function addMoveListener(){
         var x,y;
-        if(m.x<50){
-            element.style.left="50px";
-            x=50;
-        }else if(m.x>450){
-            element.style.left="450px";
-            x=450;
+        if(m.x<100){
+            element.style.left="100px";
+            x=100;
+        }else if(m.x>300){
+            element.style.left="300px";
+            x=300;
         }else{
             element.style.left=m.x+"px";
             x=m.x;
@@ -125,10 +128,12 @@ transitionMaker.getController=function(bodyElement,parentElement,element,name){
         transitionMaker.mousePosition.x= x;
         transitionMaker.mousePosition.y= y;
         transitionMaker.using[name]=transitionMaker.mouseToPoint(x,y);
+        //console.log(transitionMaker.using[name]);
         transitionMaker.changeData();
         /*实时绘制贝塞尔曲线*/
         transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
         transitionMaker.drawBezier(byId("basicTransformBlock"),"#ffffff","#ffffff");
+        transitionMaker.drawBezier(byId("transformBlock"),"#ffffff","#ffffff");
         transitionMaker.transitionAttr=transitionMaker.getTransitionAttr();
         transitionMaker.basicAttrShow(byId("basicAttrShow"));
     }
@@ -155,23 +160,25 @@ transitionMaker.changeData=function (){
 */
 transitionMaker.drawBezier=function(canvas,colorLine,colorBezier){
     var context2d=canvas.getContext('2d');
-    var p1={x:(transitionMaker.using.p1.x+0.5)*(canvas.width/2),y:canvas.height-(transitionMaker.using.p1.y+0.5)*(canvas.height/2)};
-    var p2={x:(transitionMaker.using.p2.x+0.5)*(canvas.width/2),y:canvas.height-(transitionMaker.using.p2.y+0.5)*(canvas.height/2)};
+//    var p1=transitionMaker.pointToCnavas(transitionMaker.using.p1.x,transitionMaker.using.p1.y);
+//    var p2=transitionMaker.pointToCnavas(transitionMaker.using.p2.x,transitionMaker.using.p2.y);
+    var p1={x:(transitionMaker.using.p1.x*canvas.width*2/3)+canvas.width/6,y:canvas.height-transitionMaker.using.p1.y*canvas.height/2-canvas.height/4};
+    var p2={x:(transitionMaker.using.p2.x*canvas.width*2/3)+canvas.width/6,y:canvas.height-transitionMaker.using.p2.y*canvas.height/2-canvas.height/4};
     context2d.clearRect(0,0,canvas.width,canvas.height);
     context2d.strokeStyle=colorLine;
     context2d.lineWidth=2;
     context2d.beginPath();
-    context2d.moveTo(canvas.width/4,canvas.height-canvas.height/4);
+    context2d.moveTo(canvas.width/6,canvas.height-canvas.height/4);
     context2d.lineTo(p1.x,p1.y);
-    context2d.moveTo(canvas.width-canvas.width/4,canvas.height/4);
+    context2d.moveTo(canvas.width-canvas.width/6,canvas.height/4);
     context2d.lineTo(p2.x,p2.y);
     context2d.stroke();
     context2d.lineWidth=5;
     context2d.strokeStyle=colorBezier;
     context2d.lineCap="round";
     context2d.beginPath();
-    context2d.moveTo(canvas.width/4,canvas.height-canvas.height/4);
-    context2d.bezierCurveTo(p1.x,p1.y,p2.x,p2.y,canvas.width-canvas.width/4,canvas.height/4);
+    context2d.moveTo(canvas.width/6,canvas.height-canvas.height/4);
+    context2d.bezierCurveTo(p1.x,p1.y,p2.x,p2.y,canvas.width-canvas.width/6,canvas.height/4);
     context2d.stroke();
 };
 /*
@@ -229,6 +236,82 @@ transitionMaker.basicAttrShow=function(element){
     element.innerHTML=transitionMaker.transformAttr+"<br>"+transitionMaker.borderRadiusAttr+"<br>"+transitionMaker.transitionAttr;
 };
 /*
+* 检查参数的正确性
+*/
+transitionMaker.checkParameter=function(parameterArray){
+    function check0(number){
+        return number>=0&&number<=10;
+    }
+    function check1(number){
+        return number>=0&&number<=1;
+    }
+    function check2(number){
+        return number>=-0.5&&number<=1.5;
+    }
+    function check3(number){
+        return number>=0&&number<=75;
+    }
+    function check4(number){
+        return number>=-150&&number<=150;
+    }
+    function check5(number){
+        return number>=-4&&number<=4;
+    }
+    function check6(number){
+        return number>=-360&&number<=360;
+    }
+    return check1(parameterArray[0])&&check2(parameterArray[1])&&check1(parameterArray[2])&&check2(parameterArray[3])&&check0(parameterArray[4])&&check0(parameterArray[5])&&check3(parameterArray[6])&&check3(parameterArray[7])&&check3(parameterArray[8])&&check3(parameterArray[9])&&check4(parameterArray[10])&&check4(parameterArray[11])&&check6(parameterArray[12])&&check5(parameterArray[13])&&check5(parameterArray[14])&&check6(parameterArray[15])&&check6(parameterArray[16]);
+};
+/*
+* 填入参数
+*/
+transitionMaker.getParameter=function(){
+    var str=location.href.split("#")[1];
+    //检查是否有参数
+    if(str) {
+        var parameterArray = str.split(",").map(function (value) {
+            return parseFloat(value)
+        });
+        //检查参数是否正确
+        if(transitionMaker.checkParameter(parameterArray)){
+            transitionMaker.parameterArray=parameterArray;
+            //填参数
+            transitionMaker.cloneArrayToObject(parameterArray,transitionMaker.using);
+        }else{
+            console.log("参数错误");
+        }
+    }
+};
+/*clone参数数组到using对象*/
+transitionMaker.cloneArrayToObject=function(array,object){
+    var i=0;
+    clone(object);
+    function clone(object){
+        for(var item in object){
+            if(typeof(object[item])!="object"){
+                object[item]=array[i++];
+            }else{
+                clone(object[item]);
+            }
+        }
+    }
+};
+/*将using数组转化为参数*/
+transitionMaker.cloneObjectToParameter=function(object){
+    parameter="";
+    clone(object);
+    function clone(object){
+        for(var item in object){
+            if(typeof(object[item])!="object"){
+                parameter+=(object[item]+",");
+            }else{
+                clone(object[item]);
+            }
+        }
+    }
+    return parameter;
+};
+/*
 * 播放动画
 */
 transitionMaker.playAnimation=function(clickElement,animationElement){
@@ -248,16 +331,41 @@ transitionMaker.playAnimation=function(clickElement,animationElement){
 
 };
 /*
+* 根据参数初始化页面
+*/
+transitionMaker.initPage=function(){
+    var p1=transitionMaker.pointToMouse(transitionMaker.using.p1.x,transitionMaker.using.p1.y);
+    var p2=transitionMaker.pointToMouse(transitionMaker.using.p2.x,transitionMaker.using.p2.y);
+    var ranges=document.getElementsByTagName("input");
+    byId("p1").style.left=p1.x+"px";
+    byId("p1").style.top=p1.y+"px";
+    byId("p2").style.left=p2.x+"px";
+    byId("p2").style.top=p2.y+"px";
+    transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
+    var i;
+    for(var item in transitionMaker.using){
+        if(transitionMaker.using[item]!="object") {
+            ranges[i].setAttribute("value", transitionMaker.using[item]);
+            ranges[i].parentNode.getElementsByClassName("output")[0].innerHTML = transitionMaker.using[item];
+            ++i;
+        }
+    }
+    transitionMaker.getTransformBlockCss(byId("transformBlock"));
+};
+/*
+* 加入library
+*/
+transitionMaker.addToLibrary=function(clickElement,libraryElement){
+    document.createElement("div");
+};
+/*
  *初始化
- *   初始变量
- *   画布
 */
 transitionMaker.init=function(){
-    transitionMaker.listenRange(byId("operationArea"));
-    transitionMaker.property=byId("property");
-    transitionMaker.duration=byId("duration");
     transitionMaker.bezierTitle=byId("bezierTitle");
-    transitionMaker.delay=byId("delay");
+    transitionMaker.getParameter();
+    //transitionMaker.initPage();
+    transitionMaker.listenRange(byId("operationArea"));
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p1"),"p1");
     transitionMaker.getController(document.body,byId("canvasContainer1"),byId("p2"),"p2");
     transitionMaker.drawBezier(byId("cubicBezier"),"#aaaaaa","#000000");
